@@ -6,11 +6,11 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:25:08 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/16 17:53:23 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/16 22:49:03 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_1.h"
+#include "philo.h"
 
 long long	ft_atoi(const char *str)
 {
@@ -42,10 +42,20 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-int	err(char *str)
+void	ft_putnbr_fd(unsigned long n, int fd)
 {
-	write(1, str, ft_strlen(str));
-	return (1);
+	char	nbr;
+
+	if (n >= 10)
+	{
+		ft_putnbr_fd(n / 10, fd);
+		ft_putnbr_fd(n % 10, fd);
+	}
+	else if (n < 10 && n >= 0)
+	{
+		nbr = n + 48;
+		write(fd, &nbr, 1);
+	}
 }
 
 unsigned long	what_time(void)
@@ -60,8 +70,15 @@ void	message(t_philo *philo, char *str)
 {
 	unsigned long	time;
 
-	time = what_time() - philo->args->start;
 	pthread_mutex_lock(&philo->args->message);
-	printf("%lu\t%d\t%s\n", time, philo->pos, str);
+	if (philo->args->dead)
+	{
+		time = what_time() - philo->args->start;
+		ft_putnbr_fd(time, 1);
+		write(1, "\t", 1);
+		ft_putnbr_fd(philo->pos, 1);
+		write(1, "\t", 1);
+		write(1, str, ft_strlen(str));
+	}
 	pthread_mutex_unlock(&philo->args->message);
 }
