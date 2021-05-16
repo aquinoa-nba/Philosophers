@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:19:33 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/15 21:06:59 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/16 17:53:33 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ typedef struct s_args
 	int				time_to_sleep;
 	int				nbr_of_eats;
 	unsigned long	start;
+	int				dead;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	message;
+	pthread_mutex_t	wait;
 }				t_args;
 
 typedef struct s_philo
@@ -37,14 +39,16 @@ typedef struct s_philo
 	int				pos;
 	int				r_fork;
 	int				l_fork;
+	int				is_eating;
+	unsigned long	time_to_life;
 	pthread_t		tread;
 	t_args			*args;
-	// t_philo			*philo;
-	// unsigned long	start;
 }				t_philo;
 
-
-long long	ft_atoi(const char *str);
-size_t		ft_strlen(const char *s);
+long long		ft_atoi(const char *str);
+size_t			ft_strlen(const char *s);
+void			message(t_philo *philo, char *str);
+unsigned long	what_time(void);
+int				err(char *str);
 
 #endif
