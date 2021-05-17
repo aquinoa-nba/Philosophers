@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 20:14:44 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/16 22:07:56 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 02:35:14 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,9 @@ int	init_args(t_args *args, int ac, char **av)
 	if (validation(args) == 1)
 		return (1);
 	args->start = what_time();
-	args->dead = 1;
+	args->death = 1;
 	pthread_mutex_init(&args->message, NULL);
 	pthread_mutex_init(&args->wait, NULL);
-	pthread_mutex_init(&args->philo_dead, NULL);
-	pthread_mutex_lock(&args->philo_dead);
 	return (0);
 }
 
@@ -73,6 +71,7 @@ t_philo	*init_philo(t_args *args)
 		philo[i].args = args;
 		philo[i].time_to_life = 0;
 		philo[i].is_eating = 0;
+		philo[i].nbr_of_meals = 0;
 	}
 	return (philo);
 }

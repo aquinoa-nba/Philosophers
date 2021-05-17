@@ -6,11 +6,17 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:25:08 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/16 22:49:03 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 02:41:15 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	err(char *str)
+{
+	printf("%s", str);
+	return (1);
+}
 
 long long	ft_atoi(const char *str)
 {
@@ -32,32 +38,6 @@ long long	ft_atoi(const char *str)
 	return (num * n);
 }
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
-
-void	ft_putnbr_fd(unsigned long n, int fd)
-{
-	char	nbr;
-
-	if (n >= 10)
-	{
-		ft_putnbr_fd(n / 10, fd);
-		ft_putnbr_fd(n % 10, fd);
-	}
-	else if (n < 10 && n >= 0)
-	{
-		nbr = n + 48;
-		write(fd, &nbr, 1);
-	}
-}
-
 unsigned long	what_time(void)
 {
 	struct timeval	tv;
@@ -71,14 +51,28 @@ void	message(t_philo *philo, char *str)
 	unsigned long	time;
 
 	pthread_mutex_lock(&philo->args->message);
-	if (philo->args->dead)
+	if (philo->args->death)
 	{
 		time = what_time() - philo->args->start;
-		ft_putnbr_fd(time, 1);
-		write(1, "\t", 1);
-		ft_putnbr_fd(philo->pos, 1);
-		write(1, "\t", 1);
-		write(1, str, ft_strlen(str));
+		printf("%lu\t%d\t%s", time, philo->pos, str);
 	}
 	pthread_mutex_unlock(&philo->args->message);
+}
+
+int	destroy(t_args *args)
+{
+	int		i;
+
+	i = -1;
+	while (++i < args->nbr_of_philo)
+	{
+		if (pthread_mutex_destroy(&args->forks[i]) != SUCCESS)
+			return (FAIL);
+	}
+	free(args->forks);
+	if (pthread_mutex_destroy(&args->message) != SUCCESS)
+		return (FAIL);
+	if (pthread_mutex_destroy(&args->wait) != SUCCESS)
+		return (FAIL);
+	return (SUCCESS);
 }

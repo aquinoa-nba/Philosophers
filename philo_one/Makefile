@@ -1,4 +1,4 @@
-SRCS		=		main.c utils.c init.c
+SRCS		=		main.c init.c utils.c
 
 NAME		=		philo_one
 
@@ -15,8 +15,6 @@ OBJS_DIR	=		.obj
 
 # прописываем (добавляем) путь для каждого .o файла
 OBJS		= 		$(addprefix $(OBJS_DIR)/, $(patsubst %.c, %.o, $(SRCS)))
-
-NORM 		=		norminette
 
 all:				$(NAME)
 
@@ -39,9 +37,6 @@ fclean: 			clean
 					@printf "$(UNDER_LINE)$(BOLD)$(NAME)$(NO_COLOR) $(LIGHT_RED)deleted$(NO_COLOR)\n"
 
 re: 				fclean all
-
-norm:				$(SRCS) $(HEADER)
-					@$(NORM) $(SRCS) $(HEADER)
 
 ################
 ##   COLORS   ##

@@ -6,16 +6,35 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 13:59:16 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/16 22:50:08 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 02:39:38 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	err(char *str)
+int	eating(t_philo *philo)
 {
-	write(1, str, ft_strlen(str));
-	return (1);
+	pthread_mutex_lock(&philo->args->forks[philo->l_fork]);
+	pthread_mutex_lock(&philo->args->forks[philo->r_fork]);
+	message(philo, "has taken a fork\n");
+	message(philo, "has taken a fork\n");
+	message(philo, "is eating\n");
+	philo->is_eating = 1;
+	philo->time_to_life = what_time() + philo->args->time_to_die;
+	usleep(philo->args->time_to_eat * 1000);
+	philo->is_eating = 0;
+	pthread_mutex_unlock(&philo->args->forks[philo->l_fork]);
+	pthread_mutex_unlock(&philo->args->forks[philo->r_fork]);
+	if (philo->args->nbr_of_eats)
+	{
+		philo->nbr_of_meals++;
+		if (philo->nbr_of_meals == philo->args->nbr_of_eats)
+		{
+			message(philo, "number of meals reached\n");
+			return (1);
+		}
+	}
+	return (0);
 }
 
 void	*func2(void *p)
@@ -30,9 +49,8 @@ void	*func2(void *p)
 		if (philo->is_eating == 0 && what_time() >= philo->time_to_life)
 		{
 			message(philo, "dead\n");
-			philo->args->dead = 0;
-			pthread_mutex_unlock(&philo->args->philo_dead);
-			usleep(100);
+			philo->args->death = 0;
+			pthread_mutex_unlock(&philo->args->wait);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&philo->args->wait);
@@ -48,19 +66,10 @@ void	*func(void *p)
 	philo = (t_philo *)p;
 	pthread_create(&tread, NULL, func2, (void *)philo);
 	pthread_detach(tread);
-	while (philo->args->dead)
+	while (philo->args->death)
 	{
-		pthread_mutex_lock(&philo->args->forks[philo->l_fork]);
-		message(philo, "has taken a fork\n");
-		pthread_mutex_lock(&philo->args->forks[philo->r_fork]);
-		message(philo, "has taken a fork\n");
-		message(philo, "is eating\n");
-		philo->is_eating = 1;
-		usleep(philo->args->time_to_eat * 1000);
-		philo->time_to_life = what_time() + philo->args->time_to_die;
-		philo->is_eating = 0;
-		pthread_mutex_unlock(&philo->args->forks[philo->l_fork]);
-		pthread_mutex_unlock(&philo->args->forks[philo->r_fork]);
+		if (eating(philo))
+			break ;
 		message(philo, "is sleeping\n");
 		usleep(philo->args->time_to_sleep * 1000);
 		message(philo, "is thinking\n");
@@ -76,11 +85,11 @@ int	make_threads(t_args *args, t_philo *philo)
 	while (++i < args->nbr_of_philo)
 	{
 		pthread_create(&philo[i].tread, NULL, func, (void *)&philo[i]);
-		pthread_detach(philo[i].tread);
-		usleep(100);
+		usleep(70);
 	}
-	pthread_mutex_lock(&args->philo_dead);
-	usleep(100);
+	i = -1;
+	while (++i < args->nbr_of_philo)
+		pthread_join(philo[i].tread, NULL);
 	return (0);
 }
 
@@ -93,14 +102,16 @@ int	main(int ac, char **av)
 		return (err("Error: wrong number of arguments\n"));
 	else
 	{
-		if (init_args(&args, ac, av) == 1)
-			return (1);
+		if (init_args(&args, ac, av) == FAIL)
+			return (FAIL);
 	}
 	philo = init_philo(&args);
 	if (philo == NULL)
-		return (1);
-	if (make_threads(&args, philo) == 1)
-		return (1);
+		return (FAIL);
+	if (make_threads(&args, philo) == FAIL)
+		return (FAIL);
+	if (destroy(&args) == FAIL)
+		return (FAIL);
 	free(philo);
-	return (0);
+	return (SUCCESS);
 }
