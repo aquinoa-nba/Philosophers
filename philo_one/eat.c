@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/18 18:28:23 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 19:06:48 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 20:42:03 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ int	eating(t_philo *philo)
 		philo->nbr_of_meals++;
 		if (philo->nbr_of_meals == philo->args->nbr_of_eats)
 		{
-			if (message(philo, "number of meals reached\n") == FAIL)
-				return (FAIL);
-			return (BREAK);
+			philo->args->full_meal_counter++;
+			if (philo->args->full_meal_counter == philo->args->nbr_of_philo)
+				philo->args->full_meal_flag = 0;
 		}
 	}
 	return (SUCCESS);

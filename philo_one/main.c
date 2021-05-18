@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 13:59:16 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 19:06:45 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 20:44:32 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	*process(void *p)
 		return ((void *)FAIL);
 	if (pthread_detach(death_thread) != SUCCESS)
 		return ((void *)FAIL);
-	while (philo->args->death)
+	while (philo->args->death && philo->args->full_meal_flag)
 	{
 		if (eating(philo) == BREAK)
 			break ;

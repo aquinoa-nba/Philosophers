@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:25:08 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 19:07:34 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 20:18:53 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	message(t_philo *philo, char *str)
 
 	if (pthread_mutex_lock(&philo->args->message) != SUCCESS)
 		return (FAIL);
-	if (philo->args->death)
+	if (philo->args->death && philo->args->full_meal_flag)
 	{
 		time = what_time();
 		if (time == FAIL)

@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:19:33 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 19:07:29 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 20:12:03 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ typedef struct s_args
 	int					nbr_of_eats;
 	unsigned long		start;
 	int					death;
+	int					full_meal_counter;
+	int					full_meal_flag;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		message;
 	pthread_mutex_t		wait;

@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 20:14:44 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 19:07:29 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 20:12:20 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	init_args(t_args *args, int ac, char **av)
 	if (args->start == FAIL)
 		return (FAIL);
 	args->death = 1;
+	args->full_meal_counter = 0;
+	args->full_meal_flag = 1;
 	if (pthread_mutex_init(&args->message, NULL) != SUCCESS)
 		return (FAIL);
 	if (pthread_mutex_init(&args->wait, NULL) != SUCCESS)
