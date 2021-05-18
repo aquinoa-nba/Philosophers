@@ -1,4 +1,4 @@
-SRCS		=		main.c init.c utils.c
+SRCS		=		main.c init.c eat.c utils.c
 
 NAME		=		philo_one
 

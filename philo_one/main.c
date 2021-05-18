@@ -6,75 +6,79 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 13:59:16 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 02:39:38 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 19:06:45 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	eating(t_philo *philo)
+int	checking_death(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->args->forks[philo->l_fork]);
-	pthread_mutex_lock(&philo->args->forks[philo->r_fork]);
-	message(philo, "has taken a fork\n");
-	message(philo, "has taken a fork\n");
-	message(philo, "is eating\n");
-	philo->is_eating = 1;
-	philo->time_to_life = what_time() + philo->args->time_to_die;
-	usleep(philo->args->time_to_eat * 1000);
-	philo->is_eating = 0;
-	pthread_mutex_unlock(&philo->args->forks[philo->l_fork]);
-	pthread_mutex_unlock(&philo->args->forks[philo->r_fork]);
-	if (philo->args->nbr_of_eats)
+	unsigned long	time;
+
+	if (pthread_mutex_lock(&philo->args->wait) != SUCCESS)
+		return (FAIL);
+	time = what_time();
+	if (time == FAIL)
+		return (FAIL);
+	if (philo->is_eating == 0 && time >= philo->life_limit)
 	{
-		philo->nbr_of_meals++;
-		if (philo->nbr_of_meals == philo->args->nbr_of_eats)
-		{
-			message(philo, "number of meals reached\n");
-			return (1);
-		}
+		if (message(philo, "dead\n") == FAIL)
+			return (FAIL);
+		philo->args->death = 0;
+		if (pthread_mutex_unlock(&philo->args->wait) != SUCCESS)
+			return (FAIL);
+		return (SUCCESS);
 	}
-	return (0);
+	if (pthread_mutex_unlock(&philo->args->wait) != SUCCESS)
+		return (FAIL);
+	usleep(1000);
+	return (-1);
 }
 
-void	*func2(void *p)
+void	*check_death(void *p)
 {
 	t_philo			*philo;
+	int				death_checker;
+	unsigned long	time;
 
 	philo = (t_philo *)p;
-	philo->time_to_life = what_time() + philo->args->time_to_die;
+	time = what_time();
+	if (time == FAIL)
+		return ((void *)FAIL);
+	philo->life_limit = time + philo->args->time_to_die;
 	while (1)
 	{
-		pthread_mutex_lock(&philo->args->wait);
-		if (philo->is_eating == 0 && what_time() >= philo->time_to_life)
-		{
-			message(philo, "dead\n");
-			philo->args->death = 0;
-			pthread_mutex_unlock(&philo->args->wait);
-			return (NULL);
-		}
-		pthread_mutex_unlock(&philo->args->wait);
-		usleep(1000);
+		death_checker = checking_death(philo);
+		if (death_checker == FAIL)
+			return ((void *)FAIL);
+		else if (death_checker == SUCCESS)
+			return ((void *)SUCCESS);
 	}
 }
 
-void	*func(void *p)
+void	*process(void *p)
 {
 	t_philo			*philo;
-	pthread_t		tread;
+	pthread_t		death_thread;
 
 	philo = (t_philo *)p;
-	pthread_create(&tread, NULL, func2, (void *)philo);
-	pthread_detach(tread);
+	if (pthread_create(&death_thread, NULL, check_death, (void *)philo) != \
+																	SUCCESS)
+		return ((void *)FAIL);
+	if (pthread_detach(death_thread) != SUCCESS)
+		return ((void *)FAIL);
 	while (philo->args->death)
 	{
-		if (eating(philo))
+		if (eating(philo) == BREAK)
 			break ;
-		message(philo, "is sleeping\n");
+		if (message(philo, "is sleeping\n") == FAIL)
+			return ((void *)FAIL);
 		usleep(philo->args->time_to_sleep * 1000);
-		message(philo, "is thinking\n");
+		if (message(philo, "is thinking\n") == FAIL)
+			return ((void *)FAIL);
 	}
-	return (NULL);
+	return ((void *)SUCCESS);
 }
 
 int	make_threads(t_args *args, t_philo *philo)
@@ -84,13 +88,18 @@ int	make_threads(t_args *args, t_philo *philo)
 	i = -1;
 	while (++i < args->nbr_of_philo)
 	{
-		pthread_create(&philo[i].tread, NULL, func, (void *)&philo[i]);
+		if (pthread_create(&philo[i].thread, NULL, process, (void *)&philo[i]) \
+																	!= SUCCESS)
+			return (FAIL);
 		usleep(70);
 	}
 	i = -1;
 	while (++i < args->nbr_of_philo)
-		pthread_join(philo[i].tread, NULL);
-	return (0);
+	{
+		if (pthread_join(philo[i].thread, NULL) != SUCCESS)
+			return (FAIL);
+	}
+	return (SUCCESS);
 }
 
 int	main(int ac, char **av)

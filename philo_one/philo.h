@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:19:33 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 02:39:27 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 19:07:29 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 # define SUCCESS 0
 # define FAIL 1
+# define BREAK 2
 
 typedef struct s_args
 {
@@ -38,13 +39,13 @@ typedef struct s_args
 
 typedef struct s_philo
 {
-	int					pos;
+	int					position;
 	int					r_fork;
 	int					l_fork;
 	int					is_eating;
 	int					nbr_of_meals;
-	unsigned long		time_to_life;
-	pthread_t			tread;
+	unsigned long		life_limit;
+	pthread_t			thread;
 	t_args				*args;
 }				t_philo;
 
@@ -53,7 +54,7 @@ int				init_args(t_args *args, int ac, char **av);
 t_philo			*init_philo(t_args *args);
 unsigned long	what_time(void);
 int				eating(t_philo *philo);
-void			message(t_philo *philo, char *str);
+int				message(t_philo *philo, char *str);
 int				destroy(t_args *args);
 int				err(char *str);
 

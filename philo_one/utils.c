@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:25:08 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 02:41:15 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/18 19:07:34 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	err(char *str)
 {
 	printf("%s", str);
-	return (1);
+	return (FAIL);
 }
 
 long long	ft_atoi(const char *str)
@@ -42,21 +42,28 @@ unsigned long	what_time(void)
 {
 	struct timeval	tv;
 
-	gettimeofday(&tv, NULL);
+	if (gettimeofday(&tv, NULL) == -1)
+		return (FAIL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	message(t_philo *philo, char *str)
+int	message(t_philo *philo, char *str)
 {
 	unsigned long	time;
 
-	pthread_mutex_lock(&philo->args->message);
+	if (pthread_mutex_lock(&philo->args->message) != SUCCESS)
+		return (FAIL);
 	if (philo->args->death)
 	{
-		time = what_time() - philo->args->start;
-		printf("%lu\t%d\t%s", time, philo->pos, str);
+		time = what_time();
+		if (time == FAIL)
+			return (FAIL);
+		time -= philo->args->start;
+		printf("%lu\t%d\t%s", time, philo->position, str);
 	}
-	pthread_mutex_unlock(&philo->args->message);
+	if (pthread_mutex_unlock(&philo->args->message) != SUCCESS)
+		return (FAIL);
+	return (SUCCESS);
 }
 
 int	destroy(t_args *args)
