@@ -6,11 +6,11 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 20:14:44 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 20:12:20 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/20 05:13:55 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_one.h"
 
 int	validation(t_args *args)
 {

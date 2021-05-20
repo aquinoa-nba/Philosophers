@@ -2,7 +2,7 @@ SRCS		=		main.c init.c eat.c utils.c
 
 NAME		=		philo_one
 
-HEADER		=		philo.h
+HEADER		=		philo_one.h
 
 CC			=		gcc
 

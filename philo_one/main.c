@@ -6,11 +6,11 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 13:59:16 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 20:44:32 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/20 05:12:57 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_one.h"
 
 int	checking_death(t_philo *philo)
 {
@@ -26,14 +26,11 @@ int	checking_death(t_philo *philo)
 		if (message(philo, "dead\n") == FAIL)
 			return (FAIL);
 		philo->args->death = 0;
-		if (pthread_mutex_unlock(&philo->args->wait) != SUCCESS)
-			return (FAIL);
-		return (SUCCESS);
 	}
 	if (pthread_mutex_unlock(&philo->args->wait) != SUCCESS)
 		return (FAIL);
 	usleep(1000);
-	return (-1);
+	return (SUCCESS);
 }
 
 void	*check_death(void *p)
@@ -52,9 +49,8 @@ void	*check_death(void *p)
 		death_checker = checking_death(philo);
 		if (death_checker == FAIL)
 			return ((void *)FAIL);
-		else if (death_checker == SUCCESS)
-			return ((void *)SUCCESS);
 	}
+	return ((void *)SUCCESS);
 }
 
 void	*process(void *p)
@@ -70,8 +66,8 @@ void	*process(void *p)
 		return ((void *)FAIL);
 	while (philo->args->death && philo->args->full_meal_flag)
 	{
-		if (eating(philo) == BREAK)
-			break ;
+		if (eating(philo) == FAIL)
+			return ((void *)FAIL);
 		if (message(philo, "is sleeping\n") == FAIL)
 			return ((void *)FAIL);
 		usleep(philo->args->time_to_sleep * 1000);

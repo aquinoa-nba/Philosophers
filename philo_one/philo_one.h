@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:19:33 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 20:12:03 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/20 06:45:10 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_ONE_H
+# define PHILO_ONE_H
 
 # include <unistd.h>
 # include <stdlib.h>
@@ -19,9 +19,8 @@
 # include <sys/time.h>
 # include <stdio.h>
 
-# define SUCCESS 0
-# define FAIL 1
-# define BREAK 2
+# define SUCCESS 	0
+# define FAIL 		1
 
 typedef struct s_args
 {

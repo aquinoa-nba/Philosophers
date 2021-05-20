@@ -6,11 +6,11 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:25:08 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/18 20:18:53 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/20 05:13:35 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_one.h"
 
 int	err(char *str)
 {
