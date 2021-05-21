@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 13:59:16 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/20 05:12:57 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/21 00:47:22 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,14 @@ int	checking_death(t_philo *philo)
 	time = what_time();
 	if (time == FAIL)
 		return (FAIL);
-	if (philo->is_eating == 0 && time >= philo->life_limit)
+	if (philo->is_eating == NOT_EAT && time >= philo->life_limit)
 	{
 		if (message(philo, "dead\n") == FAIL)
 			return (FAIL);
-		philo->args->death = 0;
+		philo->args->death = DEAD;
 	}
 	if (pthread_mutex_unlock(&philo->args->wait) != SUCCESS)
 		return (FAIL);
-	usleep(1000);
 	return (SUCCESS);
 }
 
@@ -44,7 +43,7 @@ void	*check_death(void *p)
 	if (time == FAIL)
 		return ((void *)FAIL);
 	philo->life_limit = time + philo->args->time_to_die;
-	while (1)
+	while (philo->args->death == ALIVE && philo->args->full_meal_flag)
 	{
 		death_checker = checking_death(philo);
 		if (death_checker == FAIL)
@@ -64,7 +63,7 @@ void	*process(void *p)
 		return ((void *)FAIL);
 	if (pthread_detach(death_thread) != SUCCESS)
 		return ((void *)FAIL);
-	while (philo->args->death && philo->args->full_meal_flag)
+	while (philo->args->death == ALIVE && philo->args->full_meal_flag)
 	{
 		if (eating(philo) == FAIL)
 			return ((void *)FAIL);
@@ -77,7 +76,7 @@ void	*process(void *p)
 	return ((void *)SUCCESS);
 }
 
-int	make_threads(t_args *args, t_philo *philo)
+int	make_processes(t_args *args, t_philo *philo)
 {
 	int			i;
 
@@ -87,7 +86,7 @@ int	make_threads(t_args *args, t_philo *philo)
 		if (pthread_create(&philo[i].thread, NULL, process, (void *)&philo[i]) \
 																	!= SUCCESS)
 			return (FAIL);
-		usleep(70);
+		usleep(200);
 	}
 	i = -1;
 	while (++i < args->nbr_of_philo)
@@ -113,7 +112,7 @@ int	main(int ac, char **av)
 	philo = init_philo(&args);
 	if (philo == NULL)
 		return (FAIL);
-	if (make_threads(&args, philo) == FAIL)
+	if (make_processes(&args, philo) == FAIL)
 		return (FAIL);
 	if (destroy(&args) == FAIL)
 		return (FAIL);

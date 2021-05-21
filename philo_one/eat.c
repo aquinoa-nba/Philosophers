@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/18 18:28:23 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/20 05:13:48 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/21 00:10:31 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 int	finish_eating(t_philo *philo)
 {
-	philo->is_eating = 0;
-	if (pthread_mutex_unlock(&philo->args->forks[philo->l_fork]) != SUCCESS)
-		return (FAIL);
+	philo->is_eating = NOT_EAT;
 	if (pthread_mutex_unlock(&philo->args->forks[philo->r_fork]) != SUCCESS)
+		return (FAIL);
+	if (pthread_mutex_unlock(&philo->args->forks[philo->l_fork]) != SUCCESS)
 		return (FAIL);
 	return (SUCCESS);
 }
@@ -36,7 +36,7 @@ int	start_eating(t_philo *philo)
 		return (FAIL);
 	if (message(philo, "is eating\n") == FAIL)
 		return (FAIL);
-	philo->is_eating = 1;
+	philo->is_eating = EAT;
 	time = what_time();
 	if (time == FAIL)
 		return (FAIL);

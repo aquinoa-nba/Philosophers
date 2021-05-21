@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:19:33 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/20 06:45:10 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/21 00:09:01 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,12 @@
 # include <sys/time.h>
 # include <stdio.h>
 
-# define SUCCESS 	0
 # define FAIL 		1
+# define SUCCESS 	0
+# define EAT 		1
+# define NOT_EAT 	0
+# define ALIVE	 	1
+# define DEAD	 	0
 
 typedef struct s_args
 {
