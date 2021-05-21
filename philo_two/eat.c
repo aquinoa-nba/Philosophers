@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/18 18:28:23 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/20 06:49:26 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/21 01:30:03 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	finish_eating(t_philo *philo)
 {
-	philo->is_eating = 0;
+	philo->is_eating = NOT_EAT;
 	sem_post(philo->args->forks);
 	sem_post(philo->args->forks);
 	return (SUCCESS);
@@ -32,7 +32,7 @@ int	start_eating(t_philo *philo)
 		return (FAIL);
 	if (message(philo, "is eating\n") == FAIL)
 		return (FAIL);
-	philo->is_eating = 1;
+	philo->is_eating = EAT;
 	time = what_time();
 	if (time == FAIL)
 		return (FAIL);

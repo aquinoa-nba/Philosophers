@@ -6,7 +6,7 @@
 /*   By: aquinoa <aquinoa@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:25:08 by aquinoa           #+#    #+#             */
-/*   Updated: 2021/05/20 06:49:43 by aquinoa          ###   ########.fr       */
+/*   Updated: 2021/05/21 00:42:15 by aquinoa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ int	message(t_philo *philo, char *str)
 int	destroy(t_args *args)
 {
 	sem_unlink("forks");
-	sem_unlink("message");
-	sem_unlink("wait");
 	if (sem_close(args->forks) != SUCCESS)
 		return (FAIL);
+	sem_unlink("message");
 	if (sem_close(args->message) != SUCCESS)
 		return (FAIL);
+	sem_unlink("wait");
 	if (sem_close(args->wait) != SUCCESS)
 		return (FAIL);
 	return (SUCCESS);
