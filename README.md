@@ -1,6 +1,6 @@
 # Philosophers
 
-Philosophers is project about multithreading in C.
+Philosophers is a C multithreading project.
 
 <p><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/An_illustration_of_the_dining_philosophers_problem.png"></p>
 
